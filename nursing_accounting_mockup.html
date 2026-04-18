@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>요양기관 회계자동화 MVP 목업</title>
+  <link rel="stylesheet" href="./nursing_accounting_styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark">CARE OPS</div>
+        <p>요양기관 회계자동화 MVP</p>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-label">MVP Scope</div>
+        <button class="nav-item active" data-page-target="scope">기능 리스트</button>
+        <button class="nav-item" data-page-target="dashboard">대시보드</button>
+        <button class="nav-item" data-page-target="settings">연동 설정</button>
+        <button class="nav-item" data-page-target="transactions">거래내역</button>
+        <button class="nav-item" data-page-target="vouchers">전표 관리</button>
+        <button class="nav-item" data-page-target="admin">관리자</button>
+      </div>
+
+      <div class="sidebar-foot">
+        <div class="status-pill good">MVP 범위 축소 완료</div>
+        <div class="sidebar-note">
+          핵심 흐름: 금융기관 API 연동, 카드 API 연동, 거래 검토, 자동전표 생성, 관리자 기본 운영
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-shell">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Minimum Viable Product</div>
+          <h1 id="pageTitle">핵심 기능 리스트</h1>
+          <p id="pageDescription">요구사항에서 실제로 필요한 최소 범위를 화면 기준으로 정리했습니다.</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn subtle" id="orgSelectBtn">행복요양센터</button>
+          <button class="btn subtle" id="monthBtn">2026년 4월</button>
+          <button class="btn primary" id="collectBtn">거래 수집 실행</button>
+        </div>
+      </header>
+
+      <div class="tab-row">
+        <button class="subtab active" data-page-target="scope">1. 기능 리스트</button>
+        <button class="subtab" data-page-target="dashboard">2. 대시보드</button>
+        <button class="subtab" data-page-target="settings">3. 연동 설정</button>
+        <button class="subtab" data-page-target="transactions">4. 거래내역</button>
+        <button class="subtab" data-page-target="vouchers">5. 전표 관리</button>
+        <button class="subtab" data-page-target="admin">6. 관리자</button>
+      </div>
+
+      <section class="page" data-page="scope">
+        <div class="page-head">
+          <div>
+            <h2>핵심 기능 리스트</h2>
+            <p>요구사항에서 숨어있는 운영 조건까지 반영한 최소 범위입니다.</p>
+          </div>
+        </div>
+
+        <div class="scope-grid" id="scopeGrid"></div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">화면 구성</div>
+              <p>MVP는 아래 5개 운영 화면과 1개 범위 정의 화면으로 충분합니다.</p>
+            </div>
+          </div>
+          <div class="kpi-strip" id="screenFlow"></div>
+        </section>
+      </section>
+
+      <section class="page hidden" data-page="dashboard">
+        <div class="summary-grid" id="summaryGrid"></div>
+
+        <div class="dashboard-grid">
+          <div class="stack">
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">오늘 해야 할 일</div>
+                  <p>운영자가 바로 처리해야 할 핵심 항목만 표시합니다.</p>
+                </div>
+              </div>
+              <div class="workflow-rail" id="workflowRail"></div>
+            </section>
+          </div>
+
+          <div class="stack">
+            <section class="panel accent">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">연동 상태</div>
+                  <p>금융기관 API와 카드 API 상태만 단순하게 보여줍니다.</p>
+                </div>
+                <span class="meta" id="lastCollectedAt">최근 수집 2026-04-18 09:30</span>
+              </div>
+              <div class="connection-list" id="connectionList"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">검토 대상 거래</div>
+                  <p>미분류 거래와 실패 거래를 바로 확인합니다.</p>
+                </div>
+              </div>
+              <div class="priority-list" id="priorityList"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="settings">
+        <div class="page-head">
+          <div>
+            <h2>기본정보 및 API 연동 설정</h2>
+            <p>기관 기본정보, 인증서, 은행 계좌, 법인카드, 연동 상태를 관리합니다.</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">기관 기본정보</div>
+                <p>기관 운영에 필요한 최소 등록값만 남겼습니다.</p>
+              </div>
+            </div>
+            <div class="form-grid" id="settingsForm"></div>
+          </section>
+
+          <div class="stack">
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">연동된 금융수단</div>
+                  <p>금융기관 API 연동과 카드 API 연동 상태를 확인합니다.</p>
+                </div>
+              </div>
+              <div class="account-list" id="accountList"></div>
+            </section>
+
+            <section class="panel accent">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">필수 세팅 체크</div>
+                  <p>MVP 오픈 전에 반드시 완료되어야 할 항목입니다.</p>
+                </div>
+              </div>
+              <div class="checklist-list" id="onboardingChecklist"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="transactions">
+        <div class="page-head">
+          <div>
+            <h2>거래내역 관리</h2>
+            <p>수집된 거래를 조회하고 거래처, 계정과목, 상태를 보정합니다.</p>
+          </div>
+          <div class="toolbar-cluster">
+            <input class="control" value="2026-04-01 ~ 2026-04-18" />
+            <select class="control" id="statusFilter"></select>
+            <button class="btn primary" id="batchClassifyBtn">자동 분류 적용</button>
+          </div>
+        </div>
+
+        <div class="workspace-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">거래 목록</div>
+                <p id="transactionMeta">총 0건</p>
+              </div>
+              <span class="meta" id="selectionMeta">선택 없음</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>일시</th>
+                    <th>구분</th>
+                    <th>거래처 / 적요</th>
+                    <th>금액</th>
+                    <th>계정과목</th>
+                    <th>상태</th>
+                  </tr>
+                </thead>
+                <tbody id="transactionTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <aside class="panel inspector">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">거래 상세</div>
+                <p>선택한 거래를 기준으로 최소 수정 항목만 보여줍니다.</p>
+              </div>
+              <button class="btn subtle" id="openVoucherFromInspectorBtn">전표 보기</button>
+            </div>
+            <div id="transactionInspector"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="vouchers">
+        <div class="page-head">
+          <div>
+            <h2>자동전표 관리</h2>
+            <p>거래를 기반으로 생성된 전표 초안을 검토하고 확정합니다.</p>
+          </div>
+          <div class="toolbar-cluster">
+            <button class="btn subtle" id="saveDraftBtn">임시저장</button>
+            <button class="btn primary" id="confirmVoucherBtn">전표 확정</button>
+          </div>
+        </div>
+
+        <div class="voucher-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">전표 상세</div>
+                <p>복식부기 기준 차변/대변만 명확히 보여줍니다.</p>
+              </div>
+              <span class="meta" id="voucherStatusLabel">자동생성 초안</span>
+            </div>
+            <div id="voucherHeader"></div>
+            <div class="voucher-lines" id="voucherLines"></div>
+          </section>
+
+          <div class="stack">
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">자동분개 근거</div>
+                  <p>왜 이 전표가 만들어졌는지 최소 로그만 남깁니다.</p>
+                </div>
+              </div>
+              <div id="voucherRules"></div>
+            </section>
+
+            <section class="panel accent">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">확정 체크</div>
+                  <p>확정 전 필수 확인 항목입니다.</p>
+                </div>
+              </div>
+              <div id="voucherChecklist"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="admin">
+        <div class="page-head">
+          <div>
+            <h2>관리자 기본 운영</h2>
+            <p>회원 관리, 서비스 상태 관리, 기본 통계/모니터링만 포함합니다.</p>
+          </div>
+        </div>
+
+        <div class="workspace-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">기관 목록</div>
+                <p id="adminListMeta">총 0개 기관</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>기관명</th>
+                    <th>상태</th>
+                    <th>서비스 상태</th>
+                    <th>최근 접속</th>
+                  </tr>
+                </thead>
+                <tbody id="adminOrgTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <div class="stack">
+            <section class="panel inspector">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">기관 상세</div>
+                  <p>기관 상태와 사용량 요약만 관리합니다.</p>
+                </div>
+              </div>
+              <div id="adminInspector"></div>
+            </section>
+
+            <section class="panel accent">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">기본 운영 지표</div>
+                  <p>운영자가 반드시 봐야 하는 최소 수치입니다.</p>
+                </div>
+              </div>
+              <div class="metric-grid" id="adminMetrics"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./nursing_accounting_data.js"></script>
+  <script src="./nursing_accounting_app.js"></script>
+</body>
+</html>
